@@ -377,11 +377,13 @@ class ProfileScreen(Screen):
         
         social_box = BoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=44)
         btn_fb = ModernButton(text="Facebook", bg_color=(0.23, 0.35, 0.6, 1))
-        btn_fb.bind(on_press=lambda x: self.open_social_link("Facebook"))
+        btn_fb.bind(on_press=lambda x: self.open_social_link("https://www.facebook.com/share/1Df5DfZN4T/"))
+        
         btn_ig = ModernButton(text="Instagram", bg_color=(0.88, 0.26, 0.43, 1))
-        btn_ig.bind(on_press=lambda x: self.open_social_link("Instagram"))
+        btn_ig.bind(on_press=lambda x: self.open_social_link("https://www.instagram.com/tesoepop?igsh=MWl2NDJ3cmRpNzNldg=="))
+        
         btn_maps = ModernButton(text="Google Maps", bg_color=(0.2, 0.65, 0.35, 1))
-        btn_maps.bind(on_press=lambda x: self.open_social_link("Google Maps"))
+        btn_maps.bind(on_press=lambda x: self.open_social_link("https://maps.app.goo.gl/KnynRDGZN8h8wH1Y6?g_st=ac"))
         
         social_box.add_widget(btn_fb)
         social_box.add_widget(btn_ig)
