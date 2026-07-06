@@ -2,7 +2,6 @@ import ssl
 # Asegura la descarga de recursos por HTTPS de forma segura
 ssl._create_default_https_context = ssl._create_unverified_context
 
-import webbrowser  # <--- Agregado de forma segura para abrir enlaces en el sistema
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.boxlayout import BoxLayout
@@ -14,6 +13,7 @@ from kivy.uix.progressbar import ProgressBar
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 from kivy.clock import Clock
 from kivy.animation import Animation
+from kivy.utils import platform  # <--- Necesario para detectar si es Android
 
 # Intentar importar plyer para abrir la galería nativa
 try:
@@ -303,7 +303,7 @@ class RegisterScreen(Screen):
         self.rect_bg.size = self.size
 
 
-# --- PANTALLA DE PERFIL REDISEÑADA Y INTERACTIVA ---
+# --- PANTALLA DE PERFIL REDISEÑADA E INTERACTIVA ---
 
 class ProfileScreen(Screen):
     def on_enter(self):
@@ -363,7 +363,7 @@ class ProfileScreen(Screen):
         self.btn_action.bind(on_press=self.toggle_edit_state)
         layout.add_widget(self.btn_action)
         
-        # Navegación corregida para evitar el cierre forzado usando la nueva pantalla añadida
+        # Navegación
         nav_box = BoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=46)
         btn_orders = ModernButton(text="Mis Pedidos", bg_color=(0.92, 0.45, 0.55, 1))
         btn_orders.bind(on_press=lambda x: setattr(self.manager, 'current', 'client_orders')) 
@@ -436,11 +436,20 @@ class ProfileScreen(Screen):
             self.profile_image.reload()
 
     def open_social_link(self, url):
-        # Mantiene de forma intacta tu lógica del texto verde en pantalla
         self.info_lbl.text = f"Redirigiendo al {url} de Tesoe Pop..."
         Clock.schedule_once(self.clear_info_lbl, 2)
-        # Abre el navegador del sistema operativo con el link real de forma segura
-        webbrowser.open(url)
+        
+        # Solución nativa e híbrida para abrir enlaces de forma segura en Android y PC sin romper Buildozer
+        if platform == 'android':
+            from jnius import autoclass
+            Intent = autoclass('android.content.Intent')
+            Uri = autoclass('android.net.Uri')
+            intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            from android import activity
+            activity.startActivity(intent)
+        else:
+            import webbrowser
+            webbrowser.open(url)
 
     def clear_info_lbl(self, dt):
         self.info_lbl.text = ""
@@ -475,26 +484,22 @@ class CatalogScreen(Screen):
 
 # --- REDISEÑO TOTAL: PANEL DE ADMINISTRADOR ---
 class AdminPanelScreen(Screen):
-    """Pantalla de Administrador Premium con el mismo diseño unificado y coherente"""
+    """Pantalla de Administrator Premium con el mismo diseño unificado y coherente"""
     def on_enter(self):
         self.clear_widgets()
         
-        # Fondo cálido y pastel corporativo
         with self.canvas.before:
             Color(0.99, 0.97, 0.95, 1)
             self.rect_bg = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self.update_bg, size=self.update_bg)
         
-        # Layout principal estructurado
         layout = BoxLayout(orientation='vertical', padding=[30, 40, 30, 30], spacing=15)
         
-        # Encabezado corporativo elegante
         header = BoxLayout(orientation='vertical', size_hint_y=0.22, spacing=5)
         header.add_widget(Label(text="Panel de Control", font_size=28, bold=True, color=(0.35, 0.2, 0.1, 1), font_name="Roboto"))
         header.add_widget(Label(text="Gestión Interna de Tesoe Pop", font_size=14, color=(0.55, 0.5, 0.45, 1), font_name="Roboto"))
         layout.add_widget(header)
         
-        # Zona informativa central de maquetación (Botones Administrativos de muestra)
         layout.add_widget(Label(text="Acciones Administrativas Disponibles", font_size=15, bold=True, color=(0.4, 0.35, 0.3, 1), size_hint_y=None, height=25))
         
         btn_products = ModernButton(text="Administrar Productos", bg_color=(0.35, 0.45, 0.6, 1), size_hint_y=None, height=52)
@@ -503,10 +508,8 @@ class AdminPanelScreen(Screen):
         layout.add_widget(btn_products)
         layout.add_widget(btn_orders_adm)
         
-        # Relleno elástico limpio
         layout.add_widget(Label(size_hint_y=0.15))
         
-        # Sección de salida e interconexiones de seguridad
         btn_logout = ModernButton(text="Cerrar Sesión", bg_color=(0.85, 0.35, 0.35, 1), size_hint_y=None, height=50)
         btn_logout.bind(on_press=lambda x: setattr(self.manager, 'current', 'login'))
         layout.add_widget(btn_logout)
@@ -529,5 +532,4 @@ class TesoePopApp(App):
         sm.add_widget(ProfileScreen(name='profile'))
         sm.add_widget(ClientOrdersScreen(name='client_orders'))
         sm.add_widget(AdminPanelScreen(name='admin_panel'))
-```)
-        
+       
