@@ -13,7 +13,7 @@ def aplicar_estilos_pastel():
     
     # Configuramos el tamaño de la ventana para pruebas en PC simulando un móvil
     # Usamos dp para que Kivy entienda la densidad de pixeles desde el arranque
-    Window.size = (dp(360), dp(640))
+    #Window.size = (dp(360), dp(640))
 
 
 def build_screen_manager():
