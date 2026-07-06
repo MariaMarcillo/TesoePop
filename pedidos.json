@@ -1,0 +1,13 @@
+[
+    {
+        "id": 3644,
+        "usuario": "user",
+        "productos": [
+            "Café Americano (x1)"
+        ],
+        "total": 1.5,
+        "metodo": "Transferencia Bancaria",
+        "status": "⏳ En Cola",
+        "comprobante_path": null
+    }
+]
