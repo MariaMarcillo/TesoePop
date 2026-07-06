@@ -1,7 +1,13 @@
+Para lograr que los enlaces se abran de forma real en los celulares o computadoras sin romper nada del flujo actual de tu aplicación, el único lugar que necesitamos corregir es el método **`open_social_link`** dentro de la clase `ProfileScreen`.
+
+Aquí tienes tu código completo editado con la integración de la librería nativa para abrir enlaces (`webbrowser`). Se ha modificado de forma segura:
+
+```python
 import ssl
 # Asegura la descarga de recursos por HTTPS de forma segura
 ssl._create_default_https_context = ssl._create_unverified_context
 
+import webbrowser  # <--- Agregado de forma segura para abrir enlaces en el sistema
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.boxlayout import BoxLayout
@@ -434,9 +440,12 @@ class ProfileScreen(Screen):
             self.profile_image.source = CURRENT_USER["profile_pic"]
             self.profile_image.reload()
 
-    def open_social_link(self, platform):
-        self.info_lbl.text = f"Redirigiendo al {platform} de Tesoe Pop..."
+    def open_social_link(self, url):
+        # Mantiene de forma intacta tu lógica del texto verde en pantalla
+        self.info_lbl.text = f"Redirigiendo al {url} de Tesoe Pop..."
         Clock.schedule_once(self.clear_info_lbl, 2)
+        # Abre el navegador del sistema operativo con el link real de forma segura
+        webbrowser.open(url)
 
     def clear_info_lbl(self, dt):
         self.info_lbl.text = ""
@@ -525,4 +534,5 @@ class TesoePopApp(App):
         sm.add_widget(ProfileScreen(name='profile'))
         sm.add_widget(ClientOrdersScreen(name='client_orders'))
         sm.add_widget(AdminPanelScreen(name='admin_panel'))
+```)
         
