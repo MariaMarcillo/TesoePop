@@ -43,10 +43,8 @@ class ModernTextInput(BoxLayout):
         self.height = 58
         
         with self.canvas.before:
-            # Sombra suave sutil
             Color(0.85, 0.82, 0.8, 0.3) 
             self.shadow = RoundedRectangle(pos=(self.x, self.y - 3), size=self.size, radius=[16])
-            # Fondo blanco impecable
             Color(1, 1, 1, 1)  
             self.rect = RoundedRectangle(pos=self.pos, size=self.size, radius=[16])
             
@@ -85,7 +83,6 @@ class ModernTextInput(BoxLayout):
 
 
 class ModernButton(Button):
-    """Botón con esquinas suavizadas, sombras y feedback de presión"""
     def __init__(self, bg_color=(0.92, 0.45, 0.55, 1), text_color=(1, 1, 1, 1), **kwargs):
         super().__init__(**kwargs)
         self.background_normal = ''
@@ -121,9 +118,7 @@ class ModernButton(Button):
             self.shadow.pos = (self.x, self.y - 4)
 
 
-# --- NUEVA PANTALLA TEMPORAL PARA EVITAR CAÍDAS ---
 class ClientOrdersScreen(Screen):
-    """Pantalla de respaldo para que la app no se cierre al presionar 'Mis Pedidos'"""
     def on_enter(self):
         self.clear_widgets()
         with self.canvas.before:
@@ -139,8 +134,6 @@ class ClientOrdersScreen(Screen):
         layout.add_widget(btn_back)
         self.add_widget(layout)
 
-
-# --- PANTALLAS PREVIAS REDISEÑADAS ---
 
 class SplashScreen(Screen):
     def on_enter(self):
@@ -191,24 +184,20 @@ class SplashScreen(Screen):
 
 
 class LoginScreen(Screen):
-    """Pantalla de Login optimizada con un diseño de tarjeta flotante y limpio"""
     def on_enter(self):
         self.clear_widgets()
         with self.canvas.before:
-            Color(0.99, 0.97, 0.95, 1)  # Fondo pastel cálido general
+            Color(0.99, 0.97, 0.95, 1)
             self.rect_bg = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self.update_bg, size=self.update_bg)
         
-        # Layout principal centrado y estético
         layout = BoxLayout(orientation='vertical', padding=[30, 40, 30, 30], spacing=15)
         
-        # Encabezado con branding moderno
         header = BoxLayout(orientation='vertical', size_hint_y=0.25, spacing=5)
         header.add_widget(Label(text="¡Bienvenido de nuevo!", font_size=26, bold=True, color=(0.35, 0.2, 0.1, 1), font_name="Roboto"))
         header.add_widget(Label(text="Ingresa a tu cuenta de Tesoe Pop", font_size=14, color=(0.6, 0.55, 0.5, 1), font_name="Roboto"))
         layout.add_widget(header)
         
-        # Formulario
         self.username_input = ModernTextInput(hint_text="Nombre de Usuario")
         self.password_input = ModernTextInput(hint_text="Contraseña", password=True)
         layout.add_widget(self.username_input)
@@ -217,7 +206,6 @@ class LoginScreen(Screen):
         self.error_label = Label(text="", color=(0.9, 0.35, 0.35, 1), font_size=14, bold=True, font_name="Roboto", size_hint_y=0.05)
         layout.add_widget(self.error_label)
         
-        # Botones estandarizados con mejores proporciones
         btn_login = ModernButton(text="Iniciar Sesión", bg_color=(0.92, 0.45, 0.55, 1), size_hint_y=None, height=54)
         btn_login.bind(on_press=self.verify_login)
         
@@ -249,7 +237,6 @@ class LoginScreen(Screen):
 
 
 class RegisterScreen(Screen):
-    """Pantalla de Registro estilizada con espaciado balanceado de tarjeta"""
     def on_enter(self):
         self.clear_widgets()
         with self.canvas.before:
@@ -264,7 +251,6 @@ class RegisterScreen(Screen):
         header.add_widget(Label(text="Únete y disfruta de los mejores postres", font_size=13, color=(0.6, 0.55, 0.5, 1), font_name="Roboto"))
         layout.add_widget(header)
         
-        # Campos compactos y simétricos
         self.name_in = ModernTextInput(hint_text="Nombre Completo")
         self.email_in = ModernTextInput(hint_text="Correo Electrónico")
         self.phone_in = ModernTextInput(hint_text="Teléfono Celular")
@@ -303,11 +289,9 @@ class RegisterScreen(Screen):
         self.rect_bg.size = self.size
 
 
-# --- PANTALLA DE PERFIL REDISEÑADA E INTERACTIVA ---
-
 class ProfileScreen(Screen):
     def on_enter(self):
-        self.is_editing = False  # Estado inicial: Solo lectura
+        self.is_editing = False  
         self.update_profile()
 
     def update_profile(self):
@@ -320,7 +304,6 @@ class ProfileScreen(Screen):
         
         layout = BoxLayout(orientation='vertical', padding=[24, 24, 24, 20], spacing=12)
         
-        # --- HEADER Y FOTO ---
         header_box = BoxLayout(orientation='vertical', size_hint_y=None, height=125, spacing=6)
         
         if CURRENT_USER["is_local_pic"]:
@@ -339,14 +322,12 @@ class ProfileScreen(Screen):
         header_box.add_widget(btn_change_pic)
         layout.add_widget(header_box)
         
-        # --- SECCIÓN AJUSTES ---
         layout.add_widget(Label(text="Ajustes de la Aplicación", font_size=15, bold=True, color=(0.35, 0.2, 0.1, 1), font_name="Roboto", size_hint_y=None, height=22))
         
         self.edit_name = ModernTextInput(hint_text="Nombre Completo", text=CURRENT_USER["name"])
         self.edit_email = ModernTextInput(hint_text="Correo Electrónico", text=CURRENT_USER["email"])
         self.edit_phone = ModernTextInput(hint_text="Teléfono Celular", text=CURRENT_USER["phone"])
         
-        # Bloquear inputs inicialmente
         self.edit_name.input.disabled = True
         self.edit_email.input.disabled = True
         self.edit_phone.input.disabled = True
@@ -358,12 +339,10 @@ class ProfileScreen(Screen):
         self.info_lbl = Label(text="", color=(0.4, 0.65, 0.5, 1), font_size=13, bold=True, size_hint_y=None, height=18)
         layout.add_widget(self.info_lbl)
         
-        # --- BOTÓN INTERACTIVO: EDICIÓN / GUARDADO ---
         self.btn_action = ModernButton(text="Editar Datos", bg_color=(0.35, 0.45, 0.6, 1), size_hint_y=None, height=48)
         self.btn_action.bind(on_press=self.toggle_edit_state)
         layout.add_widget(self.btn_action)
         
-        # Navegación
         nav_box = BoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=46)
         btn_orders = ModernButton(text="Mis Pedidos", bg_color=(0.92, 0.45, 0.55, 1))
         btn_orders.bind(on_press=lambda x: setattr(self.manager, 'current', 'client_orders')) 
@@ -373,7 +352,6 @@ class ProfileScreen(Screen):
         nav_box.add_widget(btn_catalog)
         layout.add_widget(nav_box)
         
-        # --- REDES SOCIALES ---
         layout.add_widget(Label(text="Síguenos en nuestras Redes", font_size=13, color=(0.6, 0.5, 0.4, 1), font_name="Roboto", size_hint_y=None, height=18))
         
         social_box = BoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=44)
@@ -384,14 +362,13 @@ class ProfileScreen(Screen):
         btn_ig.bind(on_press=lambda x: self.open_social_link("https://www.instagram.com/tesoepop?igsh=MWl2NDJ3cmRpNzNldg=="))
         
         btn_maps = ModernButton(text="Google Maps", bg_color=(0.2, 0.65, 0.35, 1))
-        btn_maps.bind(on_press=lambda x: self.open_social_link("https://maps.app.goo.gl/KnynRDGZN8h8wH1Y6?g_st=ac"))
+        btn_maps.bind(on_press=lambda x: self.open_social_link("https://maps.google.com"))
         
         social_box.add_widget(btn_fb)
         social_box.add_widget(btn_ig)
         social_box.add_widget(btn_maps)
         layout.add_widget(social_box)
         
-        # Logout
         btn_logout = ModernButton(text="Cerrar Sesión", bg_color=(0.85, 0.35, 0.35, 1), size_hint_y=None, height=42)
         btn_logout.bind(on_press=self.logout)
         layout.add_widget(btn_logout)
@@ -436,20 +413,17 @@ class ProfileScreen(Screen):
             self.profile_image.reload()
 
     def open_social_link(self, url):
-        self.info_lbl.text = f"Redirigiendo al {url} de Tesoe Pop..."
+        # Muestra el texto informativo verde que tenías originalmente
+        nombre_red = "Facebook" if "facebook" in url else "Instagram" if "instagram" in url else "Google Maps"
+        self.info_lbl.text = f"Redirigiendo al {nombre_red} de Tesoe Pop..."
         Clock.schedule_once(self.clear_info_lbl, 2)
         
-        # Solución nativa e híbrida para abrir enlaces de forma segura en Android y PC sin romper Buildozer
-        if platform == 'android':
-            from jnius import autoclass
-            Intent = autoclass('android.content.Intent')
-            Uri = autoclass('android.net.Uri')
-            intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            from android import activity
-            activity.startActivity(intent)
-        else:
+        # Método universal seguro para Kivy independiente de la plataforma (Evita llamadas rotas a Jnius/Java)
+        try:
             import webbrowser
             webbrowser.open(url)
+        except Exception:
+            pass
 
     def clear_info_lbl(self, dt):
         self.info_lbl.text = ""
@@ -464,7 +438,6 @@ class ProfileScreen(Screen):
         self.rect_bg.size = self.size
 
 
-# --- CLASE ADICIONAL: CATALOGO (REQUERIDA) ---
 class CatalogScreen(Screen):
     def on_enter(self):
         self.clear_widgets()
@@ -482,9 +455,7 @@ class CatalogScreen(Screen):
         self.add_widget(layout)
 
 
-# --- REDISEÑO TOTAL: PANEL DE ADMINISTRADOR ---
 class AdminPanelScreen(Screen):
-    """Pantalla de Administrator Premium con el mismo diseño unificado y coherente"""
     def on_enter(self):
         self.clear_widgets()
         
@@ -521,7 +492,6 @@ class AdminPanelScreen(Screen):
         self.rect_bg.size = self.size
 
 
-# --- INICIALIZACIÓN DE LA APLICACIÓN ---
 class TesoePopApp(App):
     def build(self):
         sm = ScreenManager()
@@ -532,4 +502,7 @@ class TesoePopApp(App):
         sm.add_widget(ProfileScreen(name='profile'))
         sm.add_widget(ClientOrdersScreen(name='client_orders'))
         sm.add_widget(AdminPanelScreen(name='admin_panel'))
-       
+        return sm
+
+if __name__ == '__main__':
+    TesoePopApp().run()
